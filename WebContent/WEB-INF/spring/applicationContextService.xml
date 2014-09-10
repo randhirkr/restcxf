@@ -21,6 +21,8 @@
 
 	<bean id="empDao" class="com.foundation4u.dao.impl.EmployeeDaoImpl">
 	</bean>
+	<bean id="exceptionMapper" class="com.foundation4u.exception.EmployeeServiceExceptionHandler">
+	</bean>
 
 	<bean id="employeeService" class="com.foundation4u.service.impl.EmployeeServiceImpl">
 		<property name="empDao" ref="empDao"/>
@@ -34,6 +36,7 @@
   		</jaxrs:serviceBeans>
   		<jaxrs:providers>
 			<ref bean='jsonProvider' />
+			<ref bean='exceptionMapper'/>
 		</jaxrs:providers>
   	</jaxrs:server>
 

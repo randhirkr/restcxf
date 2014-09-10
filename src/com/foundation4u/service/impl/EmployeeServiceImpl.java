@@ -1,6 +1,10 @@
 package com.foundation4u.service.impl;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import com.foundation4u.dao.EmployeeDao;
+import com.foundation4u.exception.EmployeeServiceException;
 import com.foundation4u.model.Employee;
 import com.foundation4u.service.EmployeeService;
 
@@ -9,19 +13,25 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private EmployeeDao empDao;
 
 	@Override
-	public Employee getEmployee(int empId) {
-		// dummy emp record
-		Employee emp = new Employee();
-		emp.setEmpId(empId);
-		emp.setEmpName("Tom");
-
-		return emp;
+	public Response getEmployee(int empId) throws EmployeeServiceException {
+		Employee emp = empDao.fetchEmployee(empId);
+		if(emp == null){
+			//return Response.ok("Employee Id: "+empId+" does not exist").build();
+			//return Response.status(Status.NOT_FOUND).build();
+			throw new EmployeeServiceException("Employee Id: "+empId+" does not exist");
+		}
+		return Response.ok(emp).build();
+		
 	}
 
 	@Override
-	public boolean addEmployee(Employee emp) {
-		// TODO Auto-generated method stub
-		return false;
+	public Response addEmployee(Employee emp) {
+		boolean status = empDao.addEmployee(emp);
+		if(status){
+			return Response.ok("employee added successfully").build();
+		}else{
+			return Response.ok("error in adding employee").build();
+		}
 	}
 
 	public EmployeeDao getEmpDao() {
@@ -32,14 +42,5 @@ public class EmployeeServiceImpl implements EmployeeService {
 		this.empDao = empDao;
 	}
 
-	@Override
-	public Employee getEmployeeById(int empId) {
-		// dummy emp record
-		Employee emp = new Employee();
-		emp.setEmpId(empId);
-		emp.setEmpName("Victor");
-		
-		return emp;
-	}
 
 }
