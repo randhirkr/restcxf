@@ -6,8 +6,10 @@ package com.foundation4u.service.impl;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Properties;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -25,6 +27,8 @@ import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.foundation4u.model.Employee;
 
@@ -34,15 +38,34 @@ import com.foundation4u.model.Employee;
  */
 public class EmployeeServiceImplTest {
 
-	DefaultHttpClient httpClient = null;
-	String url = "http://localhost:8080/restcxf/empService/employee";
+	private final static Logger log = LoggerFactory.getLogger(EmployeeServiceImplTest.class);
+	DefaultHttpClient httpClient;
+	Properties prop;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public void setUp() throws Exception {
+		prop = new Properties();
+		loadPropertiesFile();
 		httpClient = new DefaultHttpClient();
+	}
+
+	private void loadPropertiesFile() {
+		InputStream input = null;
+		try{
+			input = getClass().getClassLoader().getResourceAsStream("config.properties");
+			if (input == null) {
+				log.error("error in loading properties file");
+				return;
+			}
+			prop.load(input);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**
@@ -65,8 +88,9 @@ public class EmployeeServiceImplTest {
 	@Test
 	public void testGetEmployee() throws ClientProtocolException, IOException,
 			JAXBException {
-		HttpGet getRequest = new HttpGet(url + "/2000");
-
+		String url = prop.getProperty("url");
+		HttpGet getRequest = new HttpGet(url + "/3000");
+		log.info("url: "+url);
 		getRequest.addHeader("accept", "application/xml");
 
 		HttpResponse response = httpClient.execute(getRequest);
@@ -100,14 +124,15 @@ public class EmployeeServiceImplTest {
 			ClientProtocolException, IOException {
 
 		Employee emp = new Employee();
-		emp.setEmpId(2000);
-		emp.setEmpName("Tom");
+		emp.setEmpId(3000);
+		emp.setEmpName("Victor");
 
 		StringWriter writer = new StringWriter();
 		JAXBContext jaxbContext = JAXBContext.newInstance(Employee.class);
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.marshal(emp, writer);
-
+		
+		String url = prop.getProperty("url");
 		HttpPost postRequest = new HttpPost(url);
 
 		postRequest.addHeader("content-type", "application/xml");

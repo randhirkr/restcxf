@@ -1,19 +1,26 @@
 package com.foundation4u.service.impl;
 
+import java.util.Properties;
+
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.foundation4u.dao.EmployeeDao;
 import com.foundation4u.exception.EmployeeServiceException;
 import com.foundation4u.model.Employee;
 import com.foundation4u.service.EmployeeService;
+import com.foundation4u.util.EmployeeServiceHelper;
 
 public class EmployeeServiceImpl implements EmployeeService {
 
+	private final static Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
 	private EmployeeDao empDao;
 
 	@Override
 	public Response getEmployee(int empId) throws EmployeeServiceException {
+		log.info("fetching employee--------");
 		Employee emp = empDao.fetchEmployee(empId);
 		if(emp == null){
 			//return Response.ok("Employee Id: "+empId+" does not exist").build();
@@ -26,6 +33,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public Response addEmployee(Employee emp) {
+		log.info("adding employee----------------");
 		boolean status = empDao.addEmployee(emp);
 		if(status){
 			return Response.ok("employee added successfully").build();
