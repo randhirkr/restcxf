@@ -26,7 +26,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +38,7 @@ import com.foundation4u.model.Employee;
  * @author Randhir
  * 
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EmployeeServiceImplTest {
 
 	private final static Logger log = LoggerFactory.getLogger(EmployeeServiceImplTest.class);
