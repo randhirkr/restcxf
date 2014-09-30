@@ -2,6 +2,7 @@ package com.foundation4u.service.impl;
 
 import java.util.Properties;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
@@ -19,8 +20,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private EmployeeDao empDao;
 
 	@Override
-	public Response getEmployee(int empId) throws EmployeeServiceException {
+	public Response getEmployee(HttpHeaders header, int empId) throws EmployeeServiceException {
 		log.info("fetching employee--------");
+		log.info("httpheaders: "+header.getRequestHeaders());
+		
 		Employee emp = empDao.fetchEmployee(empId);
 		if(emp == null){
 			//return Response.ok("Employee Id: "+empId+" does not exist").build();
@@ -32,8 +35,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Response addEmployee(Employee emp) {
+	public Response addEmployee(HttpHeaders header, Employee emp) {
 		log.info("adding employee----------------");
+		log.info("httpheaders: "+header.getRequestHeaders());
+		
 		boolean status = empDao.addEmployee(emp);
 		if(status){
 			return Response.ok("employee added successfully").build();
